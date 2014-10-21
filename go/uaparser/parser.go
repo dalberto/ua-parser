@@ -3,10 +3,11 @@ package uaparser
 import (
 	"bytes"
 	"io/ioutil"
-	"launchpad.net/goyaml"
 	"reflect"
 	"regexp"
 	"sync"
+
+	"launchpad.net/goyaml"
 )
 
 type Parser struct {
@@ -46,15 +47,24 @@ func ToStruct(interfaceArr []map[string]string, typeInterface interface{}, retur
 }
 
 func New(regexFile string) *Parser {
-	parser := new(Parser)
-
 	data, err := ioutil.ReadFile(regexFile)
+
 	if nil != err {
 		panic(err)
 	}
 
+	return newFromBytes(data)
+}
+
+func NewFromBytes(data []byte) *Parser {
+	return newFromBytes(data)
+}
+
+func newFromBytes(data []byte) *Parser {
+	parser := new(Parser)
+
 	m := make(map[string][]map[string]string)
-	err = goyaml.Unmarshal(data, &m)
+	err := goyaml.Unmarshal(data, &m)
 	if err != nil {
 		panic(err)
 	}
